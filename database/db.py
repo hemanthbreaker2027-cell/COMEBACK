@@ -34,6 +34,9 @@ class Database:
     async def delete_anime(self, mal_id):
         return await self.anime.delete_one({"mal_id": mal_id})
 
+    async def delete_anime_by_slug(self, slug):
+        return await self.anime.delete_one({"slug": slug})
+
     async def update_settings(self, key, value):
         await self.settings.update_one({"key": key}, {"$set": {"value": value}}, upsert=True)
 
@@ -50,5 +53,13 @@ class Database:
 
     async def get_all_categories(self):
         return await self.categories.find().to_list(length=100)
+
+    # Admin methods
+    async def add_admin(self, user_id):
+        return await self.users.update_one({"user_id": user_id}, {"$set": {"user_id": user_id, "is_admin": True}}, upsert=True)
+
+    async def is_admin(self, user_id):
+        user = await self.users.find_one({"user_id": user_id, "is_admin": True})
+        return user is not None
 
 db = Database()

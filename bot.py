@@ -21,11 +21,15 @@ user_state = {}
 async def start(client, message):
     await message.reply_photo(
         photo=Config.LOGO_URL,
-        caption=f"Welcome to **ANIZONEFLIX (Alpha v1.0)** Bot!\n\nI can help you add anime to your website.\nUse /search to begin."
+        caption=f"Hi {message.from_user.first_name}!\n\nI am the **ANIZONEFLIX** Management Bot. Use /help to see what I can do."
     )
 
-@bot.on_message(filters.command("search") & filters.user(Config.ADMIN_IDS))
+async def is_authorized(user_id):
+    return user_id in Config.ADMIN_IDS or await db.is_admin(user_id)
+
+@bot.on_message(filters.command(["search", "add_post"]))
 async def search_cmd(client, message):
+    if not await is_authorized(message.from_user.id): return
     query = " ".join(message.command[1:])
     if not query:
         return await message.reply("Please provide an anime name. Example: `/search Naruto`")
@@ -45,8 +49,9 @@ async def search_cmd(client, message):
     await msg.edit(text)
     user_state[message.from_user.id] = {"action": "select_anime"}
 
-@bot.on_message((filters.reply | filters.text) & filters.user(Config.ADMIN_IDS))
+@bot.on_message((filters.reply | filters.text))
 async def handle_reply(client, message):
+    if not await is_authorized(message.from_user.id): return
     if message.text.startswith("/") and message.text != "/skip": return
     uid = message.from_user.id
     state = user_state.get(uid)
@@ -98,27 +103,27 @@ async def handle_reply(client, message):
     elif state["action"] == "ask_season":
         user_state[uid]["season"] = message.text
         user_state[uid]["action"] = "ask_480p"
-        await message.reply("Enter **480p Download Link** (or /skip):")
+        await message.reply("Enter **480p Download Link**:", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Skip", callback_data="skip_480p")]]))
 
     elif state["action"] == "ask_480p":
         user_state[uid]["links_480p"] = message.text if message.text != "/skip" else None
         user_state[uid]["action"] = "ask_720p"
-        await message.reply("Enter **720p Download Link** (or /skip):")
+        await message.reply("Enter **720p Download Link**:", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Skip", callback_data="skip_720p")]]))
 
     elif state["action"] == "ask_720p":
         user_state[uid]["links_720p"] = message.text if message.text != "/skip" else None
         user_state[uid]["action"] = "ask_1080p"
-        await message.reply("Enter **1080p Download Link** (or /skip):")
+        await message.reply("Enter **1080p Download Link**:", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Skip", callback_data="skip_1080p")]]))
 
     elif state["action"] == "ask_1080p":
         user_state[uid]["links_1080p"] = message.text if message.text != "/skip" else None
         user_state[uid]["action"] = "ask_batch"
-        await message.reply("Enter **Batch Download Link** (or /skip):")
+        await message.reply("Enter **Batch Download Link**:", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Skip", callback_data="skip_batch")]]))
 
     elif state["action"] == "ask_batch":
         user_state[uid]["links_batch"] = message.text if message.text != "/skip" else None
         user_state[uid]["action"] = "ask_trailer"
-        await message.reply("Enter **Trailer YouTube Link** (or /skip):")
+        await message.reply("Enter **Trailer YouTube Link**:", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Skip", callback_data="skip_trailer")]]))
 
     elif state["action"] == "ask_trailer":
         user_state[uid]["trailer_link"] = message.text if message.text != "/skip" else None
@@ -169,25 +174,44 @@ async def cancel(client, message):
     else:
         await message.reply("Nothing to cancel.")
 
-@bot.on_message(filters.command("del") & filters.user(Config.ADMIN_IDS))
+@bot.on_message(filters.command("del"))
 async def delete_anime_cmd(client, message):
+    if not await is_authorized(message.from_user.id): return
     if len(message.command) < 2:
-        return await message.reply("Provide MAL ID to delete.")
-    mal_id = int(message.command[1])
-    await db.delete_anime(mal_id)
-    await message.reply("Deleted.")
+        return await message.reply("Provide MAL ID or Website URL to delete.")
 
-@bot.on_message(filters.command("add_admin") & filters.user(Config.ADMIN_IDS))
-async def add_admin(client, message):
-    # This would normally update env or db. For now, just a placeholder as per requirements
-    await message.reply("Add the ID to ADMIN_IDS in .env and restart.")
+    input_data = message.command[1]
+    if "/anime/" in input_data:
+        slug = input_data.split("/anime/")[1].split("?")[0]
+        await db.delete_anime_by_slug(slug)
+        await message.reply(f"Deleted anime with slug: {slug}")
+    else:
+        try:
+            mal_id = int(input_data)
+            await db.delete_anime(mal_id)
+            await message.reply(f"Deleted anime with MAL ID: {mal_id}")
+        except ValueError:
+            await message.reply("Invalid input. Provide MAL ID or full anime URL.")
+
+@bot.on_message(filters.command("add_admin"))
+async def add_admin_cmd(client, message):
+    if not await is_authorized(message.from_user.id): return
+    if len(message.command) < 2:
+        return await message.reply("Provide User ID to add as admin.")
+    try:
+        user_id = int(message.command[1])
+        await db.add_admin(user_id)
+        await message.reply(f"User {user_id} added as admin in database.")
+    except ValueError:
+        await message.reply("Invalid User ID.")
 
 @bot.on_message(filters.command("update_channel") & filters.user(Config.ADMIN_IDS))
 async def update_channel(client, message):
     await message.reply("Channel update feature not implemented in this demo.")
 
-@bot.on_message(filters.command("categories") & filters.user(Config.ADMIN_IDS))
+@bot.on_message(filters.command("categories"))
 async def categories_cmd(client, message):
+    if not await is_authorized(message.from_user.id): return
     categories = await db.get_all_categories()
     text = "**Current Categories:**\n\n"
     for cat in categories:
@@ -201,13 +225,15 @@ async def categories_cmd(client, message):
     ])
     await message.reply(text, reply_markup=keyboard)
 
-@bot.on_callback_query(filters.regex("^add_cat$") & filters.user(Config.ADMIN_IDS))
+@bot.on_callback_query(filters.regex("^add_cat$"))
 async def add_cat_cb(client, callback_query):
+    if not await is_authorized(callback_query.from_user.id): return
     await callback_query.message.edit("Please send the **name** of the new category:")
     user_state[callback_query.from_user.id] = {"action": "add_category_name"}
 
-@bot.on_callback_query(filters.regex("^del_cat$") & filters.user(Config.ADMIN_IDS))
+@bot.on_callback_query(filters.regex("^del_cat$"))
 async def del_cat_cb(client, callback_query):
+    if not await is_authorized(callback_query.from_user.id): return
     categories = await db.get_all_categories()
     if not categories:
         return await callback_query.answer("No categories to delete.", show_alert=True)
@@ -218,12 +244,33 @@ async def del_cat_cb(client, callback_query):
 
     await callback_query.message.edit("Select category to remove:", reply_markup=InlineKeyboardMarkup(buttons))
 
-@bot.on_callback_query(filters.regex("^remove_cat_") & filters.user(Config.ADMIN_IDS))
+@bot.on_callback_query(filters.regex("^remove_cat_"))
 async def remove_cat_confirm(client, callback_query):
+    if not await is_authorized(callback_query.from_user.id): return
     cat_name = callback_query.data.split("remove_cat_")[1]
     await db.delete_category(cat_name)
     await callback_query.answer(f"Removed {cat_name}", show_alert=True)
     await categories_cmd(client, callback_query.message)
+
+@bot.on_callback_query(filters.regex("^skip_"))
+async def skip_callback(client, callback_query):
+    if not await is_authorized(callback_query.from_user.id): return
+    uid = callback_query.from_user.id
+    state = user_state.get(uid)
+    if not state: return
+
+    action = callback_query.data.split("skip_")[1]
+
+    # Mock a /skip message
+    class MockMessage:
+        def __init__(self, uid, text):
+            self.from_user = type('obj', (object,), {'id': uid})
+            self.text = text
+        async def reply(self, text, reply_markup=None):
+            return await bot.send_message(uid, text, reply_markup=reply_markup)
+
+    await handle_reply(client, MockMessage(uid, "/skip"))
+    await callback_query.answer()
 
 @bot.on_message(filters.command("help"))
 async def help_cmd(client, message):
@@ -232,10 +279,11 @@ async def help_cmd(client, message):
         "/start - Start the bot\n"
         "/help - Show this help message\n"
         "/search <name> - Search and add anime (Admins only)\n"
+        "/add_post <name> - Alias for /search\n"
         "/categories - Manage categories (Admins only)\n"
         "/cancel - Cancel current operation\n"
-        "/del <mal_id> - Delete anime (Admins only)\n"
-        "/add_admin - Info on adding admins\n"
+        "/del <mal_id/url> - Delete anime from website (Admins only)\n"
+        "/add_admin <id> - Add new admin to database (Admins only)\n"
         "/update_channel - Placeholder for channel updates"
     )
     await message.reply(text)
