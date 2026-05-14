@@ -22,11 +22,14 @@ async def add_global_vars(request: Request, call_next):
 async def index(request: Request):
     trending = await db.get_all_anime(limit=10)
     recent = await db.get_all_anime(limit=20)
+    categories = await db.get_all_categories()
     return templates.TemplateResponse(request=request, name="index.html", context={
         "trending": trending,
         "recent": recent,
+        "categories": categories,
         "logo_url": Config.LOGO_URL,
-        "site_name": "ANIZONEFLIX"
+        "site_name": "ANIZONEFLIX",
+        "version": "Alpha v1.0"
     })
 
 @app.get("/anime/{slug}")
@@ -34,20 +37,26 @@ async def anime_detail(request: Request, slug: str):
     anime = await db.get_anime_by_slug(slug)
     if not anime:
         raise HTTPException(status_code=404, detail="Anime not found")
+    categories = await db.get_all_categories()
     return templates.TemplateResponse(request=request, name="details.html", context={
         "anime": anime,
+        "categories": categories,
         "logo_url": Config.LOGO_URL,
-        "site_name": "ANIZONEFLIX"
+        "site_name": "ANIZONEFLIX",
+        "version": "Alpha v1.0"
     })
 
 @app.get("/search")
 async def search_web(request: Request, q: str = ""):
     results = await db.search_anime_db(q)
+    categories = await db.get_all_categories()
     return templates.TemplateResponse(request=request, name="search.html", context={
         "results": results,
         "query": q,
+        "categories": categories,
         "logo_url": Config.LOGO_URL,
-        "site_name": "ANIZONEFLIX"
+        "site_name": "ANIZONEFLIX",
+        "version": "Alpha v1.0"
     })
 
 if __name__ == "__main__":

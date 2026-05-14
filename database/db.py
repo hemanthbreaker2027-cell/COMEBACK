@@ -4,16 +4,17 @@ import os
 
 class Database:
     def __init__(self):
-        uri = Config.MONGO_URI or "mongodb://localhost:27017"
         if os.getenv("TESTING") == "1":
             from mongomock_motor import AsyncMongoMockClient as MockClient
             self.client = MockClient()
         else:
+            uri = Config.MONGO_URI or "mongodb://localhost:27017"
             self.client = AsyncIOMotorClient(uri)
         self.db = self.client[Config.DB_NAME]
         self.anime = self.db.anime
         self.users = self.db.users
         self.settings = self.db.settings
+        self.categories = self.db.categories
 
     async def add_anime(self, data):
         return await self.anime.update_one({"mal_id": data["mal_id"]}, {"$set": data}, upsert=True)
@@ -39,5 +40,15 @@ class Database:
     async def get_settings(self, key):
         res = await self.settings.find_one({"key": key})
         return res["value"] if res else None
+
+    # Category methods
+    async def add_category(self, name):
+        return await self.categories.update_one({"name": name}, {"$set": {"name": name}}, upsert=True)
+
+    async def delete_category(self, name):
+        return await self.categories.delete_one({"name": name})
+
+    async def get_all_categories(self):
+        return await self.categories.find().to_list(length=100)
 
 db = Database()

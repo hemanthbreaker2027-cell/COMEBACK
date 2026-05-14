@@ -1,11 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('ANIZONEFLIX initialized');
 
-    // Mobile Menu Toggle (simplified)
-    const menuBtn = document.querySelector('.mobile-menu-btn');
-    if (menuBtn) {
-        menuBtn.addEventListener('click', () => {
-            alert('Mobile menu coming soon!');
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileNav = document.getElementById('mobile-nav');
+    const closeMenu = document.getElementById('close-menu');
+
+    if (menuToggle && mobileNav && closeMenu) {
+        menuToggle.addEventListener('click', () => {
+            mobileNav.classList.add('active');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mobileNav.classList.remove('active');
         });
     }
 

@@ -21,7 +21,7 @@ user_state = {}
 async def start(client, message):
     await message.reply_photo(
         photo=Config.LOGO_URL,
-        caption=f"Welcome to **ANIZONEFLIX** Bot!\n\nI can help you add anime to your website.\nUse /search to begin."
+        caption=f"Welcome to **ANIZONEFLIX (Alpha v1.0)** Bot!\n\nI can help you add anime to your website.\nUse /search to begin."
     )
 
 @bot.on_message(filters.command("search") & filters.user(Config.ADMIN_IDS))
@@ -45,12 +45,19 @@ async def search_cmd(client, message):
     await msg.edit(text)
     user_state[message.from_user.id] = {"action": "select_anime"}
 
-@bot.on_message(filters.reply & filters.user(Config.ADMIN_IDS))
+@bot.on_message((filters.reply | filters.text) & filters.user(Config.ADMIN_IDS))
 async def handle_reply(client, message):
+    if message.text.startswith("/") and message.text != "/skip": return
     uid = message.from_user.id
     state = user_state.get(uid)
 
     if not state:
+        return
+
+    if state["action"] == "add_category_name":
+        await db.add_category(message.text)
+        await message.reply(f"Category **{message.text}** added successfully!")
+        del user_state[uid]
         return
 
     if state["action"] == "select_anime":
@@ -179,13 +186,53 @@ async def add_admin(client, message):
 async def update_channel(client, message):
     await message.reply("Channel update feature not implemented in this demo.")
 
+@bot.on_message(filters.command("categories") & filters.user(Config.ADMIN_IDS))
+async def categories_cmd(client, message):
+    categories = await db.get_all_categories()
+    text = "**Current Categories:**\n\n"
+    for cat in categories:
+        text += f"• {cat['name']}\n"
+
+    keyboard = InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton("➕ Add Category", callback_data="add_cat"),
+            InlineKeyboardButton("➖ Remove Category", callback_data="del_cat")
+        ]
+    ])
+    await message.reply(text, reply_markup=keyboard)
+
+@bot.on_callback_query(filters.regex("^add_cat$") & filters.user(Config.ADMIN_IDS))
+async def add_cat_cb(client, callback_query):
+    await callback_query.message.edit("Please send the **name** of the new category:")
+    user_state[callback_query.from_user.id] = {"action": "add_category_name"}
+
+@bot.on_callback_query(filters.regex("^del_cat$") & filters.user(Config.ADMIN_IDS))
+async def del_cat_cb(client, callback_query):
+    categories = await db.get_all_categories()
+    if not categories:
+        return await callback_query.answer("No categories to delete.", show_alert=True)
+
+    buttons = []
+    for cat in categories:
+        buttons.append([InlineKeyboardButton(cat['name'], callback_data=f"remove_cat_{cat['name']}")])
+
+    await callback_query.message.edit("Select category to remove:", reply_markup=InlineKeyboardMarkup(buttons))
+
+@bot.on_callback_query(filters.regex("^remove_cat_") & filters.user(Config.ADMIN_IDS))
+async def remove_cat_confirm(client, callback_query):
+    cat_name = callback_query.data.split("remove_cat_")[1]
+    await db.delete_category(cat_name)
+    await callback_query.answer(f"Removed {cat_name}", show_alert=True)
+    await categories_cmd(client, callback_query.message)
+
 @bot.on_message(filters.command("help"))
 async def help_cmd(client, message):
     text = (
-        "**ANIZONEFLIX Bot Commands**\n\n"
+        "**ANIZONEFLIX (Alpha v1.0) Bot Commands**\n\n"
         "/start - Start the bot\n"
         "/help - Show this help message\n"
         "/search <name> - Search and add anime (Admins only)\n"
+        "/categories - Manage categories (Admins only)\n"
         "/cancel - Cancel current operation\n"
         "/del <mal_id> - Delete anime (Admins only)\n"
         "/add_admin - Info on adding admins\n"

@@ -1,40 +1,20 @@
-# ANIZONEFLIX - Full Stack Anime Bot & Website
+# ANIZONEFLIX (Alpha v1.0) - Full Stack Anime Bot & Website
 
 ANIZONEFLIX is a high-end anime repository system featuring a Telegram Bot for content management and a beautiful, responsive FastAPI website for streaming and downloading.
 
-## Features
+## 🚀 Alpha Version v1.0 Features
 
 - **High-End UI:** Glassmorphism design, dark theme, and smooth animations.
 - **Dynamic Branding:** LOGO_URL and Name globally controlled via environment variables.
 - **Automated Workflow:** Bot fetches metadata from Jikan API and publishes to the website instantly.
-- **Admin Controls:** Search, Add, and Delete anime directly from Telegram.
-- **Mobile Optimized:** Fully responsive design for mobile users.
+- **Category Management:** Manage website categories directly via the bot.
+- **Admin Controls:** Search, Add, Delete, and Categorize anime from Telegram.
+- **Mobile Optimized:** Fully responsive design with functional mobile navigation.
 - **Production Ready:** Supports Docker, Render, and Railway.
 
-## Directory Structure
+---
 
-```
-anizoneflix-repo/
-├── bot/                # Bot related utilities
-├── web/                # Web related utilities
-├── templates/          # Jinja2 HTML templates
-├── static/             # CSS, JS, and Images
-├── api/                # Jikan API wrapper
-├── database/           # MongoDB Motor logic
-├── utils/              # Common utilities (slugify, etc.)
-├── config/             # Configuration handler
-├── requirements.txt    # Dependencies
-├── Dockerfile          # Container config
-├── docker-compose.yml  # Local stack
-├── render.yaml         # Render deployment
-├── Procfile            # Platform entry
-├── main.py             # Main entry (Bot + Web)
-├── bot.py              # Pyrogram Bot logic
-├── app.py              # FastAPI Web logic
-└── README.md
-```
-
-## Setup Guide
+## 🛠 Setup Guide
 
 ### 1. Get Credentials
 - **API_ID & API_HASH:** Get from [my.telegram.org](https://my.telegram.org).
@@ -43,52 +23,73 @@ anizoneflix-repo/
 - **ADMIN_IDS:** Your Telegram User ID (get from [@userinfobot](https://t.me/userinfobot)).
 - **LOGO_URL:** A direct link to your logo image.
 
-### 2. Local Installation
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/anizoneflix.git
-cd anizoneflix
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Create .env file
-cat <<EOT >> .env
-API_ID=your_api_id
-API_HASH=your_api_hash
-BOT_TOKEN=your_bot_token
-MONGO_URI=your_mongo_uri
-ADMIN_IDS=12345678,87654321
-LOGO_URL=https://your-logo-url.jpg
-BASE_URL=http://localhost:8000
-EOT
-
-# Run the application
-python main.py
-```
-
-### 3. Deployment on Render
+### 2. Deployment on Render
 1. Connect your GitHub repository to [Render](https://render.com).
 2. Create a new **Web Service**.
 3. Select your repository.
-4. Render will automatically detect `render.yaml` or you can manually set:
-   - **Runtime:** `Python 3`
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `python main.py`
-5. Add all Environment Variables mentioned in Step 2.
+4. Render will automatically detect `render.yaml`.
+5. Add all Environment Variables mentioned above.
 
-## Bot Search Flow
-1. Send `/search <anime name>` to the bot.
-2. Reply with the number of the correct anime.
-3. The bot fetches metadata automatically.
-4. Follow the prompts to add Season, 480p, 720p, 1080p, and Batch links.
-5. The anime is instantly published to your ANIZONEFLIX website.
+---
+
+## 🤖 Bot Usage & Guide
+
+### Commands
+- `/start` - Start the bot.
+- `/help` - Show command list.
+- `/search <name>` - Search for anime on Jikan API and start the upload flow.
+- `/categories` - Manage website categories (Add/Remove).
+- `/del <mal_id>` - Delete an anime from the database.
+- `/cancel` - Stop the current operation.
+
+### How to Add a Post (Anime)
+1. Send `/search Naruto` (or any anime name).
+2. The bot will show a numbered list. **Reply with the number** of the correct anime.
+3. The bot will fetch and show the poster and synopsis.
+4. **Step 1:** Enter the **Season Number** (e.g., `1`).
+5. **Step 2:** Enter the **480p Download Link** or send `/skip`.
+6. **Step 3:** Enter the **720p Download Link** or send `/skip`.
+7. **Step 4:** Enter the **1080p Download Link** or send `/skip`.
+8. **Step 5:** Enter the **Batch Download Link** or send `/skip`.
+9. **Step 6:** Enter the **YouTube Trailer Link** or send `/skip`.
+10. The bot will automatically generate the slug, save to MongoDB, and provide the live website URL.
+
+### How to Manage Categories
+1. Send `/categories`.
+2. Click **➕ Add Category**.
+3. Send the name of the category (e.g., `Action`).
+4. To remove, click **➖ Remove Category** and select the name from the list.
+
+---
+
+## 🌐 Website Navigation
+
+- **Home:** Main landing page with Trending and Recent sections.
+- **Categories:** Hover over "Categories" in the navbar to see available genres. On mobile, open the menu (bars icon) to see them.
+- **Search:** Use the search bar in the header to find anime stored in your database.
+- **Details Page:** Each anime has its own page with synopsis, metadata, download buttons, and an embedded trailer.
+
+---
+
+## 📁 Directory Structure
+
+```
+anizoneflix-repo/
+├── bot.py              # Pyrogram Bot logic (Search & Category flow)
+├── app.py              # FastAPI Web logic & Routes
+├── main.py             # Unified Entry point (Bot + Web)
+├── api/                # Jikan API Wrapper
+├── database/           # MongoDB Motor logic
+├── templates/          # HTML Templates (Jinja2)
+├── static/             # Assets (CSS/JS/Img)
+├── utils/              # Helper functions
+├── config/             # Configuration handler
+├── requirements.txt    # Python dependencies
+├── Dockerfile          # Containerization
+└── render.yaml         # Render deployment config
+```
 
 ## Credits
-- **Jikan API** for anime metadata.
-- **Pyrogram** for Telegram Bot framework.
-- **FastAPI** for high-performance web backend.
+- **Jikan API** for metadata.
+- **Pyrogram** for bot framework.
+- **FastAPI** for web backend.

@@ -12,7 +12,7 @@
     <header>
         <nav class="navbar">
             <div class="logo">
-                <a href="/"><img src="{{ logo_url }}" alt="Logo"> <span>{{ site_name }}</span></a>
+                <a href="/"><img src="{{ logo_url }}" alt="Logo"> <span>{{ site_name }} <small style="font-size: 0.6em; opacity: 0.7;">{{ version }}</small></span></a>
             </div>
             <div class="search-bar">
                 <form action="/search" method="get">
@@ -22,14 +22,38 @@
             </div>
             <div class="nav-links">
                 <a href="/">Home</a>
+                <div class="dropdown">
+                    <a href="#" class="dropbtn">Categories <i class="fas fa-caret-down"></i></a>
+                    <div class="dropdown-content">
+                        {% for cat in categories %}
+                        <a href="/search?q={{ cat.name }}">{{ cat.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
                 <a href="#">Trending</a>
-                <a href="#">Movies</a>
             </div>
-            <div class="mobile-menu-btn">
+            <div class="mobile-menu-btn" id="menu-toggle">
                 <i class="fas fa-bars"></i>
             </div>
         </nav>
     </header>
+
+    <div class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-content">
+            <div class="close-menu" id="close-menu">&times;</div>
+            <a href="/">Home</a>
+            <div class="mobile-dropdown">
+                <h3>Categories</h3>
+                <div class="mobile-cat-list">
+                    {% for cat in categories %}
+                    <a href="/search?q={{ cat.name }}">{{ cat.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <a href="#">Trending</a>
+            <a href="#">Movies</a>
+        </div>
+    </div>
 
     <main>
         {% block content %}{% endblock %}
