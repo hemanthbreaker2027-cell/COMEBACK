@@ -10,7 +10,8 @@ bot = Client(
     "anizoneflix_bot",
     api_id=Config.API_ID,
     api_hash=Config.API_HASH,
-    bot_token=Config.BOT_TOKEN
+    bot_token=Config.BOT_TOKEN,
+    in_memory=True
 )
 
 # Temporary storage for search flow
@@ -51,6 +52,7 @@ async def search_cmd(client, message):
 
 @bot.on_message((filters.reply | filters.text))
 async def handle_reply(client, message):
+    if not message.from_user: return
     if not message.text: return
     if not await is_authorized(message.from_user.id): return
     if message.text.startswith("/") and message.text != "/skip": return
