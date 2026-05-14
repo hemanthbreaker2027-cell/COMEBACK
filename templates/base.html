@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ site_name }} - Stream & Download Anime</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="/"><img src="{{ logo_url }}" alt="Logo"> <span>{{ site_name }}</span></a>
+            </div>
+            <div class="search-bar">
+                <form action="/search" method="get">
+                    <input type="text" name="q" placeholder="Search anime...">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="#">Trending</a>
+                <a href="#">Movies</a>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2023 {{ site_name }}. All rights reserved.</p>
+            <p>Built for Anime Fans.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

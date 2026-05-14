@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero-carousel">
+    {% if trending %}
+    <div class="carousel-item active" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), #0f1015), url('{{ trending[0].image }}');">
+        <div class="hero-content">
+            <h1>{{ trending[0].title }}</h1>
+            <p>{{ trending[0].synopsis[:200] }}...</p>
+            <div class="hero-buttons">
+                <a href="/anime/{{ trending[0].slug }}" class="btn btn-primary">Watch Now</a>
+                <a href="#" class="btn btn-secondary">Add to List</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+
+<section class="container">
+    <div class="section-header">
+        <h2>Trending Now</h2>
+        <a href="#" class="view-all">View All</a>
+    </div>
+    <div class="anime-grid">
+        {% for anime in trending %}
+        <div class="anime-card">
+            <a href="/anime/{{ anime.slug }}">
+                <div class="card-img">
+                    <img src="{{ anime.image }}" alt="{{ anime.title }}">
+                    <div class="card-overlay">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <h3>{{ anime.title }}</h3>
+                    <p>S{{ anime.season }} • {{ anime.status }}</p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="container">
+    <div class="section-header">
+        <h2>Recently Added</h2>
+    </div>
+    <div class="anime-grid">
+        {% for anime in recent %}
+        <div class="anime-card">
+            <a href="/anime/{{ anime.slug }}">
+                <div class="card-img">
+                    <img src="{{ anime.image }}" alt="{{ anime.title }}">
+                    <div class="card-overlay">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <h3>{{ anime.title }}</h3>
+                    <p>S{{ anime.season }} • {{ anime.status }}</p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

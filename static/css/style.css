@@ -1,0 +1,372 @@
+:root {
+    --primary-color: #ff3c00;
+    --bg-color: #0f1015;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --text-color: #ffffff;
+    --text-dim: #b3b3b3;
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Navbar */
+header {
+    background: rgba(15, 16, 21, 0.8);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.logo img {
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.search-bar {
+    flex: 1;
+    max-width: 500px;
+    margin: 0 40px;
+    position: relative;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: white;
+    outline: none;
+}
+
+.search-bar button {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+}
+
+.nav-links a {
+    margin-left: 25px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--primary-color);
+}
+
+/* Hero Section */
+.hero-carousel {
+    height: 500px;
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-item {
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    padding: 0 10%;
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.hero-content p {
+    max-width: 600px;
+    margin-bottom: 30px;
+    color: var(--text-dim);
+}
+
+.btn {
+    padding: 12px 30px;
+    border-radius: 5px;
+    font-weight: 600;
+    display: inline-block;
+    transition: transform 0.3s;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-secondary {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    margin-left: 15px;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+/* Anime Grid */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.anime-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 25px;
+}
+
+.anime-card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid var(--glass-border);
+}
+
+.anime-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.card-img {
+    position: relative;
+    height: 250px;
+}
+
+.card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.anime-card:hover .card-overlay {
+    opacity: 1;
+}
+
+.card-overlay i {
+    font-size: 3rem;
+    color: var(--primary-color);
+}
+
+.card-info {
+    padding: 15px;
+}
+
+.card-info h3 {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
+}
+
+.card-info p {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
+
+/* Details Page */
+.details-banner {
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+}
+
+.details-container {
+    display: flex;
+    margin-top: -150px;
+    gap: 40px;
+}
+
+.details-left .poster {
+    width: 300px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: 2px solid var(--glass-border);
+}
+
+.details-right {
+    flex: 1;
+    padding-top: 50px;
+}
+
+.season-tag {
+    background: var(--primary-color);
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+.anime-meta {
+    margin: 20px 0;
+    display: flex;
+    gap: 20px;
+}
+
+.genre-tag {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    margin-right: 10px;
+}
+
+.synopsis {
+    margin: 30px 0;
+    color: var(--text-dim);
+}
+
+.download-grid {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.dl-btn {
+    padding: 10px 25px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.dl-btn:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.dl-btn.batch {
+    background: #4a90e2;
+}
+
+.trailer-section {
+    margin-top: 40px;
+}
+
+.video-container {
+    margin-top: 15px;
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+/* Footer */
+footer {
+    border-top: 1px solid var(--glass-border);
+    padding: 40px 0;
+    text-align: center;
+    margin-top: 50px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 10px 5%;
+    }
+    .search-bar {
+        display: none; /* Hide on small mobile, show via toggle or separate link */
+    }
+    .nav-links {
+        display: none;
+    }
+    .hero-content h1 {
+        font-size: 2.2rem;
+    }
+    .details-container {
+        flex-direction: column;
+        align-items: center;
+        margin-top: -100px;
+    }
+    .details-right {
+        text-align: center;
+        padding-top: 20px;
+    }
+    .anime-meta {
+        justify-content: center;
+    }
+}
