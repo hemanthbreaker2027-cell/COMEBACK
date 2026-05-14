@@ -51,6 +51,7 @@ async def search_cmd(client, message):
 
 @bot.on_message((filters.reply | filters.text))
 async def handle_reply(client, message):
+    if not message.text: return
     if not await is_authorized(message.from_user.id): return
     if message.text.startswith("/") and message.text != "/skip": return
     uid = message.from_user.id
@@ -166,8 +167,9 @@ async def handle_reply(client, message):
         )
         del user_state[uid]
 
-@bot.on_message(filters.command("cancel") & filters.user(Config.ADMIN_IDS))
+@bot.on_message(filters.command("cancel"))
 async def cancel(client, message):
+    if not await is_authorized(message.from_user.id): return
     if message.from_user.id in user_state:
         del user_state[message.from_user.id]
         await message.reply("Operation cancelled.")
@@ -205,8 +207,9 @@ async def add_admin_cmd(client, message):
     except ValueError:
         await message.reply("Invalid User ID.")
 
-@bot.on_message(filters.command("update_channel") & filters.user(Config.ADMIN_IDS))
+@bot.on_message(filters.command("update_channel"))
 async def update_channel(client, message):
+    if not await is_authorized(message.from_user.id): return
     await message.reply("Channel update feature not implemented in this demo.")
 
 @bot.on_message(filters.command("categories"))

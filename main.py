@@ -6,8 +6,11 @@ import uvicorn
 
 async def start_bot():
     print("Starting Telegram Bot...")
-    await bot.start()
-    print("Bot started!")
+    try:
+        await bot.start()
+        print("Bot started!")
+    except Exception as e:
+        print(f"Error starting bot: {e}")
 
 async def start_web():
     print("Starting Web Server...")
