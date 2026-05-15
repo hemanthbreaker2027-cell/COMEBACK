@@ -20,10 +20,16 @@ async def start_web():
 
 async def main():
     # Run both bot and web server concurrently
-    await asyncio.gather(
-        start_bot(),
-        start_web()
-    )
+    bot_task = asyncio.create_task(start_bot())
+    web_task = asyncio.create_task(start_web())
+
+    try:
+        await asyncio.gather(bot_task, web_task)
+    except (asyncio.CancelledError, KeyboardInterrupt):
+        print("Shutting down...")
+        bot_task.cancel()
+        web_task.cancel()
+        await bot.stop()
 
 if __name__ == "__main__":
     try:

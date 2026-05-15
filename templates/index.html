@@ -16,52 +16,79 @@
     {% endif %}
 </section>
 
-<section class="container">
-    <div class="section-header">
-        <h2>Trending Now</h2>
-        <a href="#" class="view-all">View All</a>
-    </div>
-    <div class="anime-grid">
-        {% for anime in trending %}
-        <div class="anime-card">
-            <a href="/anime/{{ anime.slug }}">
-                <div class="card-img">
-                    <img src="{{ anime.image }}" alt="{{ anime.title }}">
-                    <div class="card-overlay">
-                        <i class="fas fa-play"></i>
-                    </div>
-                </div>
-                <div class="card-info">
-                    <h3>{{ anime.title }}</h3>
-                    <p>S{{ anime.season }} • {{ anime.status }}</p>
-                </div>
-            </a>
+<section class="container home-layout">
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <h3>Genres</h3>
+            <ul>
+                {% for cat in categories %}
+                <li><a href="/search?q={{ cat.name }}"><i class="fas fa-chevron-right"></i> {{ cat.name }}</a></li>
+                {% endfor %}
+                {% if not categories %}
+                <li><a href="#"><i class="fas fa-chevron-right"></i> Action</a></li>
+                <li><a href="#"><i class="fas fa-chevron-right"></i> Adventure</a></li>
+                <li><a href="#"><i class="fas fa-chevron-right"></i> Comedy</a></li>
+                {% endif %}
+            </ul>
         </div>
-        {% endfor %}
-    </div>
-</section>
+        <div class="sidebar-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="#"><i class="fas fa-fire"></i> New Season</a></li>
+                <li><a href="#"><i class="fas fa-star"></i> Top Rated</a></li>
+            </ul>
+        </div>
+    </aside>
 
-<section class="container">
-    <div class="section-header">
-        <h2>Recently Added</h2>
-    </div>
-    <div class="anime-grid">
-        {% for anime in recent %}
-        <div class="anime-card">
-            <a href="/anime/{{ anime.slug }}">
-                <div class="card-img">
-                    <img src="{{ anime.image }}" alt="{{ anime.title }}">
-                    <div class="card-overlay">
-                        <i class="fas fa-play"></i>
-                    </div>
+    <div class="main-content">
+        <div class="section-group">
+            <div class="section-header">
+                <h2>Trending Now</h2>
+                <a href="#" class="view-all">View All</a>
+            </div>
+            <div class="anime-grid">
+                {% for anime in trending %}
+                <div class="anime-card">
+                    <a href="/anime/{{ anime.slug }}">
+                        <div class="card-img">
+                            <img src="{{ anime.image }}" alt="{{ anime.title }}">
+                            <div class="card-overlay">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <div class="card-info">
+                            <h3>{{ anime.title }}</h3>
+                            <p>S{{ anime.season }} • {{ anime.status }}</p>
+                        </div>
+                    </a>
                 </div>
-                <div class="card-info">
-                    <h3>{{ anime.title }}</h3>
-                    <p>S{{ anime.season }} • {{ anime.status }}</p>
-                </div>
-            </a>
+                {% endfor %}
+            </div>
         </div>
-        {% endfor %}
+
+        <div class="section-group" style="margin-top: 50px;">
+            <div class="section-header">
+                <h2>Recently Added</h2>
+            </div>
+            <div class="anime-grid">
+                {% for anime in recent %}
+                <div class="anime-card">
+                    <a href="/anime/{{ anime.slug }}">
+                        <div class="card-img">
+                            <img src="{{ anime.image }}" alt="{{ anime.title }}">
+                            <div class="card-overlay">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <div class="card-info">
+                            <h3>{{ anime.title }}</h3>
+                            <p>S{{ anime.season }} • {{ anime.status }}</p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </section>
 {% endblock %}

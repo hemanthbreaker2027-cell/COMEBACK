@@ -14,12 +14,7 @@
             <div class="logo">
                 <a href="/"><img src="{{ logo_url }}" alt="Logo"> <span>{{ site_name }} <small style="font-size: 0.6em; opacity: 0.7;">{{ version }}</small></span></a>
             </div>
-            <div class="search-bar">
-                <form action="/search" method="get">
-                    <input type="text" name="q" placeholder="Search anime...">
-                    <button type="submit"><i class="fas fa-search"></i></button>
-                </form>
-            </div>
+
             <div class="nav-links">
                 <a href="/">Home</a>
                 <div class="dropdown">
@@ -32,11 +27,28 @@
                 </div>
                 <a href="#">Trending</a>
             </div>
-            <div class="mobile-menu-btn" id="menu-toggle">
-                <i class="fas fa-bars"></i>
+
+            <div class="nav-actions">
+                <div class="search-trigger" id="search-trigger">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="mobile-menu-btn" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
             </div>
         </nav>
     </header>
+
+    <!-- Search Overlay -->
+    <div class="search-overlay" id="search-overlay">
+        <div class="close-search" id="close-search">&times;</div>
+        <div class="search-container">
+            <form action="/search" method="get">
+                <input type="text" name="q" placeholder="Type anime name to search..." autofocus>
+                <p>Press Enter to Search</p>
+            </form>
+        </div>
+    </div>
 
     <div class="mobile-nav" id="mobile-nav">
         <div class="mobile-nav-content">

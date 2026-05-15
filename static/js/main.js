@@ -16,6 +16,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Search Overlay
+    const searchTrigger = document.getElementById('search-trigger');
+    const searchOverlay = document.getElementById('search-overlay');
+    const closeSearch = document.getElementById('close-search');
+
+    if (searchTrigger && searchOverlay && closeSearch) {
+        searchTrigger.addEventListener('click', () => {
+            searchOverlay.classList.add('active');
+            searchOverlay.querySelector('input').focus();
+        });
+
+        closeSearch.addEventListener('click', () => {
+            searchOverlay.classList.remove('active');
+        });
+
+        // Close on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchOverlay.classList.remove('active');
+                mobileNav.classList.remove('active');
+            }
+        });
+    }
+
     // Smooth scroll for anchors
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
