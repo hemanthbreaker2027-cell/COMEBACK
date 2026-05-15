@@ -15,3 +15,4 @@ class Config:
     LOGO_URL = os.getenv("LOGO_URL", "https://telegra.ph/file/0c1737e466395b3531b78.jpg")
     BASE_URL = os.getenv("BASE_URL", "https://anizoneflix.onrender.com")
     DB_NAME = "anizoneflix"
+    DEBUG = os.getenv("DEBUG", "False").lower() == "true"

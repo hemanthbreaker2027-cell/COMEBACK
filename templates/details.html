@@ -1,52 +1,82 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="anime-details-page">
-    <div class="details-banner" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.5), #0f1015), url('{{ anime.image }}');"></div>
-    <div class="container details-container">
-        <div class="details-left">
-            <img src="{{ anime.image }}" alt="{{ anime.title }}" class="poster">
-        </div>
-        <div class="details-right">
-            <h1 class="anime-title">{{ anime.title }} <span class="season-tag">Season {{ anime.season }}</span></h1>
-            <div class="anime-meta">
-                <span><i class="fas fa-star"></i> {{ anime.score }}</span>
-                <span><i class="fas fa-tv"></i> {{ anime.status }}</span>
-                <span><i class="fas fa-calendar"></i> {{ anime.aired }}</span>
-            </div>
-            <div class="genres">
-                {% for genre in anime.genres %}
-                <span class="genre-tag">{{ genre }}</span>
-                {% endfor %}
-            </div>
-            <p class="synopsis">{{ anime.synopsis }}</p>
+<div class="anime-details-wrapper">
+    <div class="anime-bg-blur" style="background-image: url('{{ anime.image }}');"></div>
 
-            <div class="download-section">
-                <h3>Download Links</h3>
-                <div class="download-grid">
-                    {% if anime.links['480p'] %}
-                    <a href="{{ anime.links['480p'] }}" class="dl-btn" target="_blank">480p</a>
-                    {% endif %}
-                    {% if anime.links['720p'] %}
-                    <a href="{{ anime.links['720p'] }}" class="dl-btn" target="_blank">720p</a>
-                    {% endif %}
-                    {% if anime.links['1080p'] %}
-                    <a href="{{ anime.links['1080p'] }}" class="dl-btn" target="_blank">1080p</a>
-                    {% endif %}
-                    {% if anime.links['batch'] %}
-                    <a href="{{ anime.links['batch'] }}" class="dl-btn batch" target="_blank">Batch</a>
-                    {% endif %}
+    <div class="container anime-content-container">
+        <div class="anime-details-card glass">
+            <div class="anime-info-top">
+                <div class="poster-container">
+                    <img src="{{ anime.image }}" alt="{{ anime.title }}" class="main-poster">
+                </div>
+                <div class="anime-main-details">
+                    <h1 class="anime-title-hd">{{ anime.title }}</h1>
+                    <div class="anime-subtitle">Season {{ anime.season }} • {{ anime.status }}</div>
+
+                    <div class="anime-stats">
+                        <div class="stat-item"><i class="fas fa-star"></i> <span>{{ anime.score }}</span></div>
+                        <div class="stat-item"><i class="fas fa-tv"></i> <span>{{ anime.episodes }} EPS</span></div>
+                        <div class="stat-item"><i class="fas fa-calendar-alt"></i> <span>{{ anime.year if anime.year else 'N/A' }}</span></div>
+                        <div class="stat-item"><i class="fas fa-closed-captioning"></i> <span>Sub/Dub</span></div>
+                    </div>
+
+                    <div class="genres-list">
+                        {% for genre in anime.genres %}
+                        <span class="genre-item">{{ genre }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="synopsis-box">
+                        <h3>Synopsis</h3>
+                        <p>{{ anime.synopsis }}</p>
+                    </div>
                 </div>
             </div>
 
-            {% if anime.trailer %}
-            <div class="trailer-section">
-                <h3>Trailer</h3>
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/{{ anime.trailer.split('=')[-1] if '=' in anime.trailer else anime.trailer.split('/')[-1] }}" frameborder="0" allowfullscreen></iframe>
+            <div class="action-section">
+                <div class="download-box">
+                    <h2 class="section-title"><i class="fas fa-download"></i> Download Options</h2>
+                    <div class="download-buttons-grid">
+                        {% if anime.links['480p'] %}
+                        <a href="{{ anime.links['480p'] }}" class="btn-dl q480" target="_blank">
+                            <span class="q-label">480p</span>
+                            <span class="q-desc">Standard Definition</span>
+                        </a>
+                        {% endif %}
+
+                        {% if anime.links['720p'] %}
+                        <a href="{{ anime.links['720p'] }}" class="btn-dl q720" target="_blank">
+                            <span class="q-label">720p</span>
+                            <span class="q-desc">High Definition</span>
+                        </a>
+                        {% endif %}
+
+                        {% if anime.links['1080p'] %}
+                        <a href="{{ anime.links['1080p'] }}" class="btn-dl q1080" target="_blank">
+                            <span class="q-label">1080p</span>
+                            <span class="q-desc">Full HD Quality</span>
+                        </a>
+                        {% endif %}
+
+                        {% if anime.links['batch'] %}
+                        <a href="{{ anime.links['batch'] }}" class="btn-dl qbatch" target="_blank">
+                            <span class="q-label">Batch</span>
+                            <span class="q-desc">All Episodes Zip</span>
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
+
+                {% if anime.trailer %}
+                <div class="trailer-box">
+                    <h2 class="section-title"><i class="fab fa-youtube"></i> Official Trailer</h2>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/{{ anime.trailer.split('=')[-1] if '=' in anime.trailer else anime.trailer.split('/')[-1] }}" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
 </div>

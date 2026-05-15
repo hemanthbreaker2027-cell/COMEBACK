@@ -150,6 +150,7 @@ async def handle_reply(client, message):
             "rating": data.get("rating"),
             "status": data.get("status"),
             "aired": data.get("aired", {}).get("string"),
+            "year": data.get("year"),
             "trailer": state["trailer_link"],
             "links": {
                 "480p": state["links_480p"],
