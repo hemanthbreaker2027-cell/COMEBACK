@@ -1,95 +1,103 @@
-# ANIZONEFLIX (Alpha v1.0) - Full Stack Anime Bot & Website
+# 🎬 ANIZONEFLIX - Full Stack Anime Platform
 
-ANIZONEFLIX is a high-end anime repository system featuring a Telegram Bot for content management and a beautiful, responsive FastAPI website for streaming and downloading.
-
-## 🚀 Alpha Version v1.0 Features
-
-- **High-End UI:** Glassmorphism design, dark theme, and smooth animations.
-- **Dynamic Branding:** LOGO_URL and Name globally controlled via environment variables.
-- **Automated Workflow:** Bot fetches metadata from Jikan API and publishes to the website instantly.
-- **Category Management:** Manage website categories directly via the bot.
-- **Admin Controls:** Search, Add, Delete, and Categorize anime from Telegram.
-- **Mobile Optimized:** Fully responsive design with functional mobile navigation.
-- **Production Ready:** Supports Docker, Render, and Railway.
+ANIZONEFLIX is a high-performance, professional anime website and Telegram bot system. It allows admins to search for anime metadata via the Jikan API and publish content instantly to a beautiful glassmorphism-themed website.
 
 ---
 
-## 🛠 Setup Guide
+## 🚀 Key Features
 
-### 1. Get Credentials
-- **API_ID & API_HASH:** Get from [my.telegram.org](https://my.telegram.org).
-- **BOT_TOKEN:** Create via [@BotFather](https://t.me/BotFather).
-- **MONGO_URI:** Get from [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
-- **ADMIN_IDS:** Your Telegram User ID (get from [@userinfobot](https://t.me/userinfobot)).
-- **LOGO_URL:** A direct link to your logo image.
-
-### 2. Deployment on Render
-1. Connect your GitHub repository to [Render](https://render.com).
-2. Create a new **Web Service**.
-3. Select your repository.
-4. Render will automatically detect `render.yaml`.
-5. Add all Environment Variables mentioned above.
+- **High-End UI:** Modern dark theme with glassmorphism, trending carousels, and smooth animations.
+- **Automated Bot Flow:** Search -> Select -> Details -> Season -> Links -> Publish.
+- **Dynamic Branding:** LOGO_URL and Name globally controlled via Environment Variables.
+- **SEO Optimized:** Fast loading with clean meta tags for better search visibility.
+- **Mobile Responsive:** Fully functional sidebar and navigation on all mobile devices.
+- **Production Ready:** Pre-configured for Render, Docker, and Railway.
 
 ---
 
-## 🤖 Bot Usage & Guide
+## 🛠 Deployment Guide (Render)
 
-### Commands
-- `/start` - Start the bot.
-- `/help` - Show command list.
-- `/search <name>` - Search for anime on Jikan API and start the upload flow.
-- `/categories` - Manage website categories (Add/Remove).
-- `/del <mal_id>` - Delete an anime from the database.
-- `/cancel` - Stop the current operation.
+### 1. Obtain Your Credentials
 
-### How to Add a Post (Anime)
-1. Send `/search Naruto` (or any anime name).
-2. The bot will show a numbered list. **Reply with the number** of the correct anime.
-3. The bot will fetch and show the poster and synopsis.
-4. **Step 1:** Enter the **Season Number** (e.g., `1`).
-5. **Step 2:** Enter the **480p Download Link** or send `/skip`.
-6. **Step 3:** Enter the **720p Download Link** or send `/skip`.
-7. **Step 4:** Enter the **1080p Download Link** or send `/skip`.
-8. **Step 5:** Enter the **Batch Download Link** or send `/skip`.
-9. **Step 6:** Enter the **YouTube Trailer Link** or send `/skip`.
-10. The bot will automatically generate the slug, save to MongoDB, and provide the live website URL.
+You need the following variables to run the system:
 
-### How to Manage Categories
-1. Send `/categories`.
-2. Click **➕ Add Category**.
-3. Send the name of the category (e.g., `Action`).
-4. To remove, click **➖ Remove Category** and select the name from the list.
+1.  **API_ID & API_HASH:** Get them from [my.telegram.org](https://my.telegram.org).
+2.  **BOT_TOKEN:** Create a new bot via [@BotFather](https://t.me/BotFather) on Telegram.
+3.  **MONGO_URI:** Sign up at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas), create a free cluster, and get your connection string.
+4.  **ADMIN_IDS:** Your numeric Telegram ID. Get it from [@userinfobot](https://t.me/userinfobot).
+5.  **LOGO_URL:** A direct link to your branding logo (e.g., `https://example.com/logo.png`).
+6.  **BASE_URL:** Your website URL (e.g., `https://anizoneflix.onrender.com`).
 
----
+### 2. Deploy to Render
 
-## 🌐 Website Navigation
-
-- **Home:** Main landing page with Trending and Recent sections.
-- **Categories:** Hover over "Categories" in the navbar to see available genres. On mobile, open the menu (bars icon) to see them.
-- **Search:** Use the search bar in the header to find anime stored in your database.
-- **Details Page:** Each anime has its own page with synopsis, metadata, download buttons, and an embedded trailer.
+1.  **Fork/Upload:** Ensure this repository is in your GitHub account.
+2.  **Create Web Service:** On [Render](https://render.com), click **New +** and select **Web Service**.
+3.  **Connect Repo:** Select your `anizoneflix-repo`.
+4.  **Runtime:** Select **Docker**.
+5.  **Environment Variables:** Add the following:
+    - `API_ID`
+    - `API_HASH`
+    - `BOT_TOKEN`
+    - `MONGO_URI`
+    - `ADMIN_IDS` (Comma separated if multiple, e.g., `12345,67890`)
+    - `LOGO_URL`
+    - `BASE_URL`
+    - `JIKAN_API` (Set to `https://api.jikan.moe/v4`)
+    - `SECRET_KEY` (Any random string)
+    - `ADMIN_API_KEY` (Any random string)
+6.  **Deploy:** Render will build the Docker image and start both the bot and website automatically.
 
 ---
 
-## 📁 Directory Structure
+## 🤖 Telegram Bot Usage
 
-```
+Only authorized **Admins** can use the bot.
+
+### Core Commands
+- `/start` - Check if bot is alive.
+- `/search <name>` - Search for anime and start the adding flow.
+- `/categories` - Add or remove website genres.
+- `/del <id/url>` - Remove an entry (Paste MAL ID or the Website Link).
+- `/help` - View all admin commands.
+
+### The "Adding" Flow
+1. Send `/search One Piece`.
+2. Pick the correct result by replying with its **number**.
+3. The bot fetches full details (Poster, Score, Synopsis).
+4. Enter **Season Number**.
+5. The bot asks for **480p, 720p, 1080p, and Batch** links. Send the link or click **Skip**.
+6. Enter the **YouTube Trailer** link or Skip.
+7. **Done!** The anime is now live on your website.
+
+---
+
+## 📁 Repository Structure
+
+```text
 anizoneflix-repo/
-├── bot.py              # Pyrogram Bot logic (Search & Category flow)
-├── app.py              # FastAPI Web logic & Routes
-├── main.py             # Unified Entry point (Bot + Web)
-├── api/                # Jikan API Wrapper
-├── database/           # MongoDB Motor logic
+├── bot/                # Telegram Bot package
+│   └── __init__.py     # Core Bot logic & Handlers
+├── web/                # Web logic package
+├── api/                # Jikan API wrapper
+├── database/           # MongoDB Motor integration
+├── static/             # Assets (CSS/JS/Images)
 ├── templates/          # HTML Templates (Jinja2)
-├── static/             # Assets (CSS/JS/Img)
-├── utils/              # Helper functions
-├── config/             # Configuration handler
-├── requirements.txt    # Python dependencies
-├── Dockerfile          # Containerization
-└── render.yaml         # Render deployment config
+├── config/             # Environment configuration
+├── main.py             # Entry Point (Runs Bot + Web)
+├── bot.py              # Bot proxy entry
+├── app.py              # FastAPI app definition
+├── Dockerfile          # Container build config
+└── render.yaml         # Render blueprint
 ```
 
-## Credits
-- **Jikan API** for metadata.
-- **Pyrogram** for bot framework.
-- **FastAPI** for web backend.
+---
+
+## 🔧 Troubleshooting
+
+- **Bot not responding?** Check your `API_ID` and `API_HASH`. Ensure `BOT_TOKEN` is correct.
+- **Database error?** Ensure your MongoDB IP Whitelist is set to `0.0.0.0/0` in Atlas.
+- **Render Build Failed?** Check the logs for `ImportError`. Ensure the repository structure matches the guide above.
+
+---
+
+**Developed for ANIZONEFLIX.** Built for Anime Fans.

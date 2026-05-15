@@ -1,38 +1,39 @@
 import asyncio
 import os
+import logging
 from bot import bot
 from app import app
 import uvicorn
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("ANIZONEFLIX_MAIN")
+
 async def start_bot():
-    print("Starting Telegram Bot...")
+    logger.info("Starting Telegram Bot...")
     try:
         await bot.start()
-        print("Bot started!")
+        logger.info("Bot started successfully!")
     except Exception as e:
-        print(f"Error starting bot: {e}")
+        logger.error(f"Critical error starting bot: {e}")
 
 async def start_web():
-    print("Starting Web Server...")
-    config = uvicorn.Config(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
+    logger.info("Starting Web Server...")
+    port = int(os.environ.get("PORT", 8000))
+    config = uvicorn.Config(app, host="0.0.0.0", port=port, log_level="info")
     server = uvicorn.Server(config)
     await server.serve()
 
 async def main():
-    # Run both bot and web server concurrently
-    bot_task = asyncio.create_task(start_bot())
-    web_task = asyncio.create_task(start_web())
+    # Start bot in the background
+    asyncio.create_task(start_bot())
 
-    try:
-        await asyncio.gather(bot_task, web_task)
-    except (asyncio.CancelledError, KeyboardInterrupt):
-        print("Shutting down...")
-        bot_task.cancel()
-        web_task.cancel()
-        await bot.stop()
+    # Run web server (blocks until exit)
+    await start_web()
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
-    except KeyboardInterrupt:
-        print("Stopping...")
+    except (KeyboardInterrupt, SystemExit):
+        logger.info("System shutting down...")
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
