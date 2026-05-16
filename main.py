@@ -12,7 +12,9 @@ async def start_bot():
     logger.info("Starting Telegram Bot...")
     try:
         await bot.start()
-        logger.info("Bot started successfully!")
+        from bot import set_commands
+        await set_commands(bot)
+        logger.info("Bot started and commands set successfully!")
     except Exception as e:
         logger.error(f"Critical error starting bot: {e}")
 

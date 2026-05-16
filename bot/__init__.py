@@ -19,6 +19,19 @@ bot = Client(
     in_memory=True
 )
 
+async def set_commands(client):
+    from pyrogram.types import BotCommand
+    commands = [
+        BotCommand("start", "Start the bot"),
+        BotCommand("help", "Show help menu"),
+        BotCommand("search", "Search and add anime (Admin)"),
+        BotCommand("categories", "Manage categories (Admin)"),
+        BotCommand("del", "Delete anime (Admin)"),
+        BotCommand("cancel", "Cancel current operation")
+    ]
+    await client.set_bot_commands(commands)
+    logger.info("Bot commands set successfully!")
+
 # Temporary storage for search flow
 search_results = {}
 user_state = {}

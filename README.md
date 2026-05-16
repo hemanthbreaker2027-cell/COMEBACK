@@ -1,4 +1,4 @@
-# 🎬 ANIZONEFLIX - Full Stack Anime Platform
+# 🎥 ANIZONEFLIX - Full Stack Anime Platform (V1.0)
 
 ANIZONEFLIX is a high-performance, professional anime website and Telegram bot system. It allows admins to search for anime metadata via the Jikan API and publish content instantly to a beautiful glassmorphism-themed website.
 
@@ -15,37 +15,56 @@ ANIZONEFLIX is a high-performance, professional anime website and Telegram bot s
 
 ---
 
-## 🛠 Deployment Guide (Render)
+## 🛠 Step-by-Step Deployment Guide (Render)
 
-### 1. Obtain Your Credentials
+### Phase 1: Obtain Your Credentials
 
-You need the following variables to run the system:
+1.  **Telegram API Credentials:**
+    - Go to [my.telegram.org](https://my.telegram.org).
+    - Login and click on **API Development tools**.
+    - Create an app (if not already done).
+    - Copy your `API_ID` and `API_HASH`.
 
-1.  **API_ID & API_HASH:** Get them from [my.telegram.org](https://my.telegram.org).
-2.  **BOT_TOKEN:** Create a new bot via [@BotFather](https://t.me/BotFather) on Telegram.
-3.  **MONGO_URI:** Sign up at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas), create a free cluster, and get your connection string.
-4.  **ADMIN_IDS:** Your numeric Telegram ID. Get it from [@userinfobot](https://t.me/userinfobot).
-5.  **LOGO_URL:** A direct link to your branding logo (e.g., `https://example.com/logo.png`).
-6.  **BASE_URL:** Your website URL (e.g., `https://anizoneflix.onrender.com`).
+2.  **Telegram Bot Token:**
+    - Open Telegram and message [@BotFather](https://t.me/BotFather).
+    - Send `/newbot`, choose a name and username.
+    - Copy the `BOT_TOKEN` provided.
 
-### 2. Deploy to Render
+3.  **MongoDB URI:**
+    - Sign up at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
+    - Create a **Free Cluster**.
+    - Go to **Network Access** -> **Add IP Address** -> Select **Allow Access From Anywhere (0.0.0.0/0)**.
+    - Go to **Database Access** -> Create a User with a password.
+    - Go to **Clusters** -> **Connect** -> **Connect your application**.
+    - Copy the connection string. Replace `<password>` with your actual password. This is your `MONGO_URI`.
+
+4.  **Admin ID:**
+    - Message [@userinfobot](https://t.me/userinfobot) on Telegram.
+    - Copy your numeric ID. This is your `ADMIN_IDS`.
+
+### Phase 2: Deploy to Render
 
 1.  **Fork/Upload:** Ensure this repository is in your GitHub account.
-2.  **Create Web Service:** On [Render](https://render.com), click **New +** and select **Web Service**.
-3.  **Connect Repo:** Select your `anizoneflix-repo`.
-4.  **Runtime:** Select **Docker**.
-5.  **Environment Variables:** Add the following:
-    - `API_ID`
-    - `API_HASH`
-    - `BOT_TOKEN`
-    - `MONGO_URI`
-    - `ADMIN_IDS` (Comma separated if multiple, e.g., `12345,67890`)
-    - `LOGO_URL`
-    - `BASE_URL`
-    - `JIKAN_API` (Set to `https://api.jikan.moe/v4`)
-    - `SECRET_KEY` (Any random string)
-    - `ADMIN_API_KEY` (Any random string)
-6.  **Deploy:** Render will build the Docker image and start both the bot and website automatically.
+2.  **Create Web Service:**
+    - Log in to [Render](https://render.com).
+    - Click **New +** -> **Web Service**.
+    - Connect your GitHub repository.
+3.  **Configuration:**
+    - **Name:** `anizoneflix`
+    - **Runtime:** `Docker`
+    - **Instance Type:** `Free` (or higher)
+4.  **Environment Variables:** Click **Advanced** -> **Add Environment Variable** for each:
+    - `API_ID`: (Your Telegram API ID)
+    - `API_HASH`: (Your Telegram API Hash)
+    - `BOT_TOKEN`: (Your Telegram Bot Token)
+    - `MONGO_URI`: (Your MongoDB Connection String)
+    - `ADMIN_IDS`: (Your numeric Telegram ID)
+    - `LOGO_URL`: (Direct link to your logo image, e.g., `https://i.imgur.com/example.png`)
+    - `BASE_URL`: (Your website URL, e.g., `https://anizoneflix.onrender.com`)
+    - `JIKAN_API`: `https://api.jikan.moe/v4`
+    - `SECRET_KEY`: (Any random text)
+    - `ADMIN_API_KEY`: (Any random text)
+5.  **Click Deploy!** Render will build the Docker image and start the bot and website together.
 
 ---
 
@@ -60,14 +79,17 @@ Only authorized **Admins** can use the bot.
 - `/del <id/url>` - Remove an entry (Paste MAL ID or the Website Link).
 - `/help` - View all admin commands.
 
-### The "Adding" Flow
+### The "Adding" Flow (Sequential)
 1. Send `/search One Piece`.
-2. Pick the correct result by replying with its **number**.
-3. The bot fetches full details (Poster, Score, Synopsis).
-4. Enter **Season Number**.
-5. The bot asks for **480p, 720p, 1080p, and Batch** links. Send the link or click **Skip**.
-6. Enter the **YouTube Trailer** link or Skip.
-7. **Done!** The anime is now live on your website.
+2. Pick the correct result by replying with its **number** (e.g., `1`).
+3. The bot fetches full details automatically.
+4. Enter **Season Number** (e.g., `1`).
+5. Enter **480p Link** (or click **Skip**).
+6. Enter **720p Link** (or click **Skip**).
+7. Enter **1080p Link** (or click **Skip**).
+8. Enter **Batch Link** (or click **Skip**).
+9. Enter **YouTube Trailer** link (or click **Skip**).
+10. **Done!** The bot provides the live link to your website.
 
 ---
 
@@ -76,14 +98,13 @@ Only authorized **Admins** can use the bot.
 ```text
 anizoneflix-repo/
 ├── bot/                # Telegram Bot package
-│   └── __init__.py     # Core Bot logic & Handlers
-├── web/                # Web logic package
+│   └── __init__.py     # Core Bot logic, Commands, Handlers
 ├── api/                # Jikan API wrapper
 ├── database/           # MongoDB Motor integration
-├── static/             # Assets (CSS/JS/Images)
+├── static/             # Frontend Assets (CSS/JS/Images)
 ├── templates/          # HTML Templates (Jinja2)
 ├── config/             # Environment configuration
-├── main.py             # Entry Point (Runs Bot + Web)
+├── main.py             # Entry Point (Unified Bot + Web)
 ├── bot.py              # Bot proxy entry
 ├── app.py              # FastAPI app definition
 ├── Dockerfile          # Container build config
@@ -94,10 +115,10 @@ anizoneflix-repo/
 
 ## 🔧 Troubleshooting
 
-- **Bot not responding?** Check your `API_ID` and `API_HASH`. Ensure `BOT_TOKEN` is correct.
-- **Database error?** Ensure your MongoDB IP Whitelist is set to `0.0.0.0/0` in Atlas.
-- **Render Build Failed?** Check the logs for `ImportError`. Ensure the repository structure matches the guide above.
+- **Bot not responding?** Verify `API_ID`, `API_HASH`, and `BOT_TOKEN`. Check Render logs for startup errors.
+- **MongoDB error?** Ensure your IP Whitelist in Atlas is set to `0.0.0.0/0`.
+- **UI not loading?** Check `BASE_URL` is set correctly in environment variables.
 
 ---
 
-**Developed for ANIZONEFLIX.** Built for Anime Fans.
+**Developed for ANIZONEFLIX.** Built with ❤️ for Anime Fans.
