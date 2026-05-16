@@ -115,9 +115,16 @@ anizoneflix-repo/
 
 ## 🔧 Troubleshooting
 
-- **Bot not responding?** Verify `API_ID`, `API_HASH`, and `BOT_TOKEN`. Check Render logs for startup errors.
-- **MongoDB error?** Ensure your IP Whitelist in Atlas is set to `0.0.0.0/0`.
-- **UI not loading?** Check `BASE_URL` is set correctly in environment variables.
+- **Bot not responding?**
+    1. Send `/ping` to the bot. If it replies "Pong!", the bot is active.
+    2. Check Render logs. If you see "Bot started", but no response, ensure `ADMIN_IDS` includes your ID.
+    3. Verify your `API_ID` and `API_HASH` are correct from `my.telegram.org`.
+- **MongoDB error?**
+    1. Ensure your IP Whitelist in Atlas is set to `0.0.0.0/0`.
+    2. Check that your `MONGO_URI` includes the correct password and database name.
+- **UI not loading?**
+    1. Check `BASE_URL` is set correctly in environment variables.
+    2. Ensure the port is automatically handled by Render (Docker exposed on 8000).
 
 ---
 

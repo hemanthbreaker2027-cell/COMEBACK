@@ -36,9 +36,13 @@ async def set_commands(client):
 search_results = {}
 user_state = {}
 
+@bot.on_message(filters.command("ping"))
+async def ping(client, message):
+    await message.reply("🏓 **Pong!** Bot is alive and responsive.")
+
 @bot.on_message(filters.command("start"))
 async def start(client, message):
-    logger.info(f"Start command from {message.from_user.id}")
+    logger.info(f"Start command from {message.from_user.id if message.from_user else 'Unknown'}")
     try:
         await message.reply_photo(
             photo=Config.LOGO_URL,
@@ -92,7 +96,7 @@ async def search_cmd(client, message):
     await msg.edit(text)
     user_state[message.from_user.id] = {"action": "select_anime"}
 
-@bot.on_message((filters.reply | filters.text) & filters.private)
+@bot.on_message(filters.private & (filters.reply | filters.text) & ~filters.command(["start", "help", "search", "ping", "categories", "del", "cancel", "add_admin"]))
 async def handle_reply(client, message):
     if not message.from_user: return
     if not message.text: return
@@ -319,6 +323,11 @@ async def skip_callback(client, callback_query):
 
     await handle_reply(client, MockMessage(uid, "/skip"))
     await callback_query.answer()
+
+@bot.on_message(filters.command("update_channel"))
+async def update_channel_cmd(client, message):
+    if not await is_authorized(message.from_user.id): return
+    await message.reply("📢 **Channel Update feature is active.** Posts are automatically synced.")
 
 @bot.on_message(filters.command("help"))
 async def help_cmd(client, message):

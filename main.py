@@ -15,6 +15,11 @@ async def start_bot():
         from bot import set_commands
         await set_commands(bot)
         logger.info("Bot started and commands set successfully!")
+
+        # Keep bot task alive and log heartbeat
+        while True:
+            await asyncio.sleep(300)
+            logger.info("Bot Heartbeat: Still Alive")
     except Exception as e:
         logger.error(f"Critical error starting bot: {e}")
 
